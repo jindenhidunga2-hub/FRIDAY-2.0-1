@@ -1,188 +1,154 @@
 const chat = document.getElementById("chat");
-const input = document.getElementById("msg");
-const sendButton = document.getElementById("send");
-const micButton = document.getElementById("mic");
-const response = document.getElementById("response");
+const input = document.getElementById("userInput");
 
-function addMessage(text, type) {
+function addMessage(text, sender) {
 const message = document.createElement("div");
-message.className = "message " + type;
 
-if (type === "user") {
-    message.textContent = "YOU: " + text;
-} else {
-    message.textContent = "FRIDAY: " + text;
-}
+message.className =
+    sender === "user"
+        ? "message user"
+        : "message friday";
+
+message.innerHTML =
+    sender === "user"
+        ? `<b>YOU:</b><br>${text}`
+        : `<b>FRIDAY:</b><br>${text}`;
 
 chat.appendChild(message);
 chat.scrollTop = chat.scrollHeight;
 
 }
 
-function speak(text) {
-if ("speechSynthesis" in window) {
-window.speechSynthesis.cancel();
+function sendMessage() {
+const text = input.value.trim();
 
-    const speech = new SpeechSynthesisUtterance(text);
-    speech.rate = 1;
-    speech.pitch = 1;
-    speech.lang = "en-US";
+if (!text) return;
 
-    window.speechSynthesis.speak(speech);
-}
-
-}
-
-function getFridayResponse(command) {
-const text = command.toLowerCase();
-
-if (text.includes("hello") || text.includes("hi friday")) {
-    return "Hello Boss. How may I assist you?";
-}
-
-if (text.includes("time")) {
-    const now = new Date();
-
-    return "The current time is " +
-        now.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit"
-        });
-}
-
-if (text.includes("date")) {
-    return "Today is " +
-        new Date().toLocaleDateString([], {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-        });
-}
-
-if (text.includes("youtube")) {
-    window.open("https://www.youtube.com", "_blank");
-    return "Opening YouTube.";
-}
-
-if (text.includes("whatsapp")) {
-    window.open("https://web.whatsapp.com", "_blank");
-    return "Opening WhatsApp.";
-}
-
-if (text.includes("status")) {
-    return "All FRIDAY systems are online and operating normally.";
-}
-
-if (text.includes("who are you")) {
-    return "I am FRIDAY, your personal artificial intelligence assistant.";
-}
-
-if (text.includes("thank")) {
-    return "You are welcome, Boss.";
-}
-
-if (text.includes("bye") || text.includes("goodbye")) {
-    return "Goodbye Boss. FRIDAY will be ready when you need me.";
-}
-
-return "I understand your command: " + command +
-    ". My advanced AI connection is not configured yet.";
-
-}
-
-function processCommand(command) {
-if (!command.trim()) {
-return;
-}
-
-addMessage(command, "user");
-
+addMessage(text, "user");
 input.value = "";
 
-response.textContent = "Processing your command...";
-
 setTimeout(() => {
-    const answer = getFridayResponse(command);
+    const response = fridayResponse(text);
 
-    addMessage(answer, "ai");
-
-    response.textContent = answer;
-
-    speak(answer);
+    addMessage(response, "friday");
+    speak(response);
 }, 500);
 
 }
 
-sendButton.addEventListener("click", () => {
-processCommand(input.value);
-});
-
-input.addEventListener("keydown", (event) => {
-if (event.key === "Enter") {
-processCommand(input.value);
-}
-});
-
-/* Quick Command Buttons */
-
 function quickCommand(command) {
-processCommand(command);
+input.value = command;
+sendMessage();
 }
 
-/* Voice Recognition */
+function fridayResponse(text) {
+const command = text.toLowerCase();
 
+if (command.includes("hello") || command.includes("hi")) {
+    return "Hello. I am FRIDAY. How may I assist you?";
+}
+
+if (command.includes("time")) {
+    return "The current time is " +
+        new Date().toLocaleTimeString();
+}
+
+if (command.includes("date")) {
+    return "Today's date is " +
+        new Date().toLocaleDateString();
+}
+
+if (command.includes("youtube")) {
+    window.open("https://www.youtube.com", "_blank");
+    return "Opening YouTube.";
+}
+
+if (command.includes("google")) {
+    window.open("https://www.google.com", "_blank");
+    return "Opening Google.";
+}
+
+if (command.includes("joke")) {
+    return "Why do programmers prefer dark mode? Because light attracts bugs.";
+}
+
+if (command.includes("status")) {
+    return "All FRIDAY systems are operating normally.";
+}
+
+if (command.includes("who are you")) {
+    return "I am FRIDAY, your virtual artificial intelligence assistant.";
+}
+
+if (command.includes("weather")) {
+    return "Weather integration can be connected to a live weather API.";
+}
+
+if (command.includes("open")) {
+    return "Command received. Advanced application controls can be added here.";
+}
+
+return `I understand your command: ${text}. Advanced AI integration can be connected here.`;
+
+}
+
+function speak(text) {
+if (!("speechSynthesis" in window)) return;
+
+window.speechSynthesis.cancel();
+
+const speech = new SpeechSynthesisUtterance(text);
+
+speech.rate = 1;
+speech.pitch = 0.9;
+speech.volume = 1;
+
+window.speechSynthesis.speak(speech);
+
+}
+
+function startVoice() {
 const SpeechRecognition =
 window.SpeechRecognition ||
 window.webkitSpeechRecognition;
 
-if (SpeechRecognition) {
+if (!SpeechRecognition) {
+    addMessage(
+        "Speech recognition is not supported in this browser.",
+        "friday"
+    );
+    return;
+}
 
 const recognition = new SpeechRecognition();
 
 recognition.lang = "en-US";
-recognition.continuous = false;
 recognition.interimResults = false;
+recognition.maxAlternatives = 1;
 
-micButton.addEventListener("click", () => {
-    response.textContent = "Listening...";
-    micButton.style.transform = "scale(1.15)";
-
-    recognition.start();
-});
-
-recognition.onresult = (event) => {
-    const command = event.results[0][0].transcript;
-
-    response.textContent = "You said: " + command;
-
-    processCommand(command);
+recognition.onstart = function () {
+    addMessage("Listening...", "friday");
 };
 
-recognition.onerror = () => {
-    response.textContent =
-        "Voice recognition error. Please try again.";
+recognition.onresult = function (event) {
+    const speechText =
+        event.results[0][0].transcript;
 
-    micButton.style.transform = "scale(1)";
+    input.value = speechText;
+    sendMessage();
 };
 
-recognition.onend = () => {
-    micButton.style.transform = "scale(1)";
+recognition.onerror = function () {
+    addMessage(
+        "Voice recognition error. Please try again.",
+        "friday"
+    );
 };
 
-} else {
-
-micButton.addEventListener("click", () => {
-    response.textContent =
-        "Voice recognition is not supported in this browser.";
-});
+recognition.start();
 
 }
 
-/* Startup Message */
-
-window.addEventListener("load", () => {
-setTimeout(() => {
-speak("Hello Boss. Friday systems are online.");
-}, 800);
+document.addEventListener("DOMContentLoaded", () => {
+input.focus();
 });
