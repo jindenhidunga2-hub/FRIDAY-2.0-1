@@ -1,106 +1,138 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>FRIDAY AI</title>
 
-<link rel="stylesheet" href="style.css">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
 
-</head><body><!-- Header -->
-<header>
-    <h1>F.R.I.D.A.Y</h1>
-    <p>PERSONAL AI ASSISTANT</p>
-</header>
+    <meta name="theme-color" content="#050b14">
 
-<!-- Main AI Core -->
-<main class="container">
+    <title>FRIDAY AI</title>
 
-    <div class="status">
-        <span class="status-dot"></span>
-        SYSTEM ONLINE
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <h1>FRIDAY</h1>
+        <p>PERSONAL AI ASSISTANT</p>
+    </header>
+
+
+    <!-- AI CORE -->
+    <div class="core">
+        <div class="ring r1"></div>
+        <div class="ring r2"></div>
+        <div class="center"></div>
     </div>
 
-    <!-- AI Orb -->
-    <div class="ai-core">
-
-        <div class="ring ring1"></div>
-        <div class="ring ring2"></div>
-        <div class="ring ring3"></div>
-
-        <div class="orb">
-            <span>FRIDAY</span>
-        </div>
-
-    </div>
-
-    <!-- AI Message -->
-    <div class="assistant-message">
-        <p id="response">
-            Hello Boss. FRIDAY systems are online.
-        </p>
-    </div>
-
-    <!-- Voice Button -->
-    <button id="mic" class="mic-button">
-        🎤
-    </button>
-
-    <p class="voice-text">
-        TAP TO SPEAK
+    <p class="core-text" id="core-status">
+        SYSTEM CHECKING...
     </p>
 
-    <!-- Chat -->
-    <div class="chat-container">
 
-        <div id="chat" class="chat">
-            <div class="message ai">
-                FRIDAY: How may I assist you?
-            </div>
+    <!-- SYSTEM DIAGNOSTICS -->
+    <div class="status">
+
+        <h2>SYSTEM DIAGNOSTICS</h2>
+
+        <div class="row">
+            <span>AI ENGINE</span>
+            <b id="diag-ai" class="warning">
+                ● CHECKING
+            </b>
         </div>
 
-        <div class="input-area">
-            <input
-                type="text"
-                id="msg"
-                placeholder="Type a command..."
-                autocomplete="off"
-            >
+        <div class="row">
+            <span>CONNECTION</span>
+            <b id="diag-connection" class="warning">
+                ● CHECKING
+            </b>
+        </div>
 
-            <button id="send">
-                SEND
-            </button>
+        <div class="row">
+            <span>VOICE INTERFACE</span>
+            <b id="diag-voice" class="warning">
+                ● CHECKING
+            </b>
+        </div>
+
+        <div class="row">
+            <span>LONG-TERM MEMORY</span>
+            <b id="diag-memory" class="warning">
+                ● CHECKING
+            </b>
         </div>
 
     </div>
 
-    <!-- Quick Commands -->
-    <div class="commands">
 
-        <button onclick="quickCommand('Open YouTube')">
-            YouTube
+    <!-- CHAT -->
+    <div
+        class="chat"
+        id="chat"
+        aria-live="polite"
+    ></div>
+
+
+    <!-- INPUT AREA -->
+    <div class="input-area">
+
+        <input
+            id="msg"
+            type="text"
+            placeholder="Enter a command for FRIDAY..."
+            autocomplete="off"
+        >
+
+        <button
+            id="send"
+            type="button"
+        >
+            EXECUTE
         </button>
 
-        <button onclick="quickCommand('Open WhatsApp')">
-            WhatsApp
+        <button
+            id="mic-btn"
+            type="button"
+            aria-label="Activate voice input"
+        >
+            🎙️
         </button>
 
-        <button onclick="quickCommand('What time is it?')">
-            Time
+        <button
+            id="cam-btn"
+            type="button"
+            aria-label="Analyze image"
+        >
+            📷
         </button>
 
-        <button onclick="quickCommand('System status')">
-            Status
+        <button
+            id="clear-btn"
+            type="button"
+        >
+            CLEAR MEMORY
         </button>
+
+        <input
+            id="img-input"
+            type="file"
+            accept="image/*"
+            style="display: none;"
+        >
 
     </div>
 
-</main>
 
-<!-- Footer -->
-<footer>
-    <p>FRIDAY AI • VERSION 1.0</p>
-</footer>
-
-<script src="script.js"></script>
+    <!-- JAVASCRIPT -->
+    <script src="script.js"></script>
 
 </body>
 </html>
